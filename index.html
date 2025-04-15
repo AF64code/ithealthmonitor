@@ -4,490 +4,568 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Proactive IT Health Monitoring</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #1a73e8;
+            --success: #34a853;
+            --warning: #fbbc05;
+            --danger: #ea4335;
+            --dark: #202124;
+            --light: #f8f9fa;
+            --gray: #70757a;
+            --border: #dadce0;
+        }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            background-color: #F8FAFC;
-            color: #1E293B;
+            background-color: #f5f5f5;
+            color: var(--dark);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .notification-icon {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .notification-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger);
+            color: white;
+            font-size: 10px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .dashboard {
-            max-width: 1440px;
-            margin: 0 auto;
-            padding: 24px;
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
         }
         
-        .header {
+        .sidebar {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            background-color: #e8f0fe;
+            color: var(--primary);
+        }
+        
+        .nav-item.active {
+            font-weight: 500;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .overview {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+        }
+        
+        .stat-card {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .stat-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 32px;
-            padding: 16px 24px;
-            background: linear-gradient(135deg, #1E40AF 0%, #1E3A8A 100%);
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
         }
         
-        .header h1 {
-            color: #FFFFFF;
-            font-size: 28px;
-            font-weight: 600;
+        .stat-title {
+            font-size: 0.9rem;
+            color: var(--gray);
         }
         
-        .quick-actions {
-            display: flex;
-            gap: 16px;
-        }
-        
-        .button {
-            padding: 10px 20px;
-            border: none;
+        .stat-icon {
+            width: 40px;
+            height: 40px;
             border-radius: 8px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            color: white;
         }
         
-        .button.refresh {
-            background-color: #10B981;
-            color: #FFFFFF;
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 5px;
         }
         
-        .button.refresh:hover {
-            background-color: #059669;
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85rem;
         }
         
-        .button.settings {
-            background-color: #3B82F6;
-            color: #FFFFFF;
+        .trend-up {
+            color: var(--success);
         }
         
-        .button.settings:hover {
-            background-color: #2563EB;
+        .trend-down {
+            color: var(--danger);
         }
         
-        .metrics-grid {
+        .bg-primary {
+            background-color: var(--primary);
+        }
+        
+        .bg-success {
+            background-color: var(--success);
+        }
+        
+        .bg-warning {
+            background-color: var(--warning);
+        }
+        
+        .bg-danger {
+            background-color: var(--danger);
+        }
+        
+        .charts-row {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 24px;
-            margin-bottom: 32px;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
         }
         
-        .metric-card {
-            background-color: #FFFFFF;
-            padding: 24px;
-            border-radius: 12px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s ease;
-        }
-        
-        .metric-card:hover {
-            transform: translateY(-4px);
-        }
-        
-        .metric-card h2 {
-            font-size: 16px;
-            color: #64748B;
-            margin-bottom: 16px;
+        .chart-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 8px;
+            margin-bottom: 20px;
         }
         
-        .metric-value {
-            font-size: 32px;
-            font-weight: 600;
-            color: #1E40AF;
-            margin-bottom: 16px;
+        .chart-title {
+            font-size: 1.1rem;
+            font-weight: 500;
         }
         
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background-color: #E2E8F0;
+        .chart-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .chart-btn {
+            background-color: transparent;
+            border: 1px solid var(--border);
+            padding: 6px 12px;
             border-radius: 4px;
-            overflow: hidden;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
         }
         
-        .progress-fill {
-            height: 100%;
-            border-radius: 4px;
-            transition: width 0.3s ease;
+        .chart-btn:hover {
+            background-color: var(--light);
         }
         
-        .progress-fill.good {
-            background-color: #10B981;
+        .chart-btn.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
         }
         
-        .progress-fill.warning {
-            background-color: #F59E0B;
-        }
-        
-        .progress-fill.critical {
-            background-color: #EF4444;
-        }
-        
-        .alerts-section {
-            background-color: #FFFFFF;
-            padding: 24px;
-            border-radius: 12px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-        
-        .alerts-section h2 {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 24px;
-            color: #1E293B;
+        .chart-container {
+            height: 300px;
+            position: relative;
         }
         
         .alert-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
+            overflow-y: auto;
+            max-height: 300px;
         }
         
-        .alert-card {
-            padding: 16px;
+        .alert-item {
+            display: flex;
+            gap: 15px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .alert-icon {
+            width: 36px;
+            height: 36px;
             border-radius: 8px;
-            border-left: 4px solid;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-        }
-        
-        .alert-card.critical {
-            background-color: #FEF2F2;
-            border-color: #EF4444;
-        }
-        
-        .alert-card.warning {
-            background-color: #FFFBEB;
-            border-color: #F59E0B;
-        }
-        
-        .alert-card.info {
-            background-color: #EFF6FF;
-            border-color: #3B82F6;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
         }
         
         .alert-content {
-            flex: 1;
+            flex-grow: 1;
         }
         
         .alert-title {
-            font-weight: 600;
-            margin-bottom: 4px;
-            color: #1E293B;
-        }
-        
-        .alert-description {
-            color: #64748B;
-            font-size: 14px;
-        }
-        
-        .alert-actions {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .alert-button {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 6px;
-            font-size: 14px;
             font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .alert-message {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+        
+        .alert-time {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        
+        .alert-action {
+            background-color: transparent;
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            border-radius: 4px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            white-space: nowrap;
         }
         
-        .alert-button.resolve {
-            background-color: #10B981;
-            color: #FFFFFF;
+        .alert-action:hover {
+            background-color: var(--light);
         }
         
-        .alert-button.resolve:hover {
-            background-color: #059669;
-        }
-        
-        .alert-button.ignore {
-            background-color: #E2E8F0;
-            color: #64748B;
-        }
-        
-        .alert-button.ignore:hover {
-            background-color: #CBD5E1;
-        }
-        
-        .self-healing-section {
-            margin-top: 32px;
-            background-color: #FFFFFF;
-            padding: 24px;
-            border-radius: 12px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-        
-        .self-healing-section h2 {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 24px;
-            color: #1E293B;
-        }
-        
-        .healing-actions {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-        }
-        
-        .healing-card {
-            background-color: #F8FAFC;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #E2E8F0;
-        }
-        
-        .healing-card h3 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: #1E293B;
-        }
-        
-        .healing-card p {
-            color: #64748B;
-            font-size: 14px;
-            margin-bottom: 16px;
-        }
-        
-        .healing-status {
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
             display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            color: #64748B;
+            justify-content: space-between;
+            color: var(--gray);
+            font-size: 0.85rem;
         }
         
-        .status-indicator {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
+        .footer-links {
+            display: flex;
+            gap: 20px;
         }
         
-        .status-indicator.active {
-            background-color: #10B981;
+        .footer a {
+            color: var(--gray);
+            text-decoration: none;
         }
         
-        .status-indicator.pending {
-            background-color: #F59E0B;
-        }
-        
-        .status-indicator.inactive {
-            background-color: #94A3B8;
+        .footer a:hover {
+            color: var(--primary);
         }
     </style>
 </head>
 <body>
-    <div class="dashboard">
-        <div class="header">
-            <h1>Proactive IT Health Monitoring</h1>
-            <div class="quick-actions">
-                <button class="button refresh">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M23 4v6h-6M1 20v-6h6"></path>
-                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-                    </svg>
-                    Refresh
-                </button>
-                <button class="button settings">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="3"></circle>
-                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                    </svg>
-                    Settings
-                </button>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #1a73e8;">
+                    <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                    <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                    <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                    <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                </svg>
+                <h1>IT Health Monitor</h1>
             </div>
-        </div>
-        
-        <div class="metrics-grid">
-            <div class="metric-card">
-                <h2>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <div class="user-info">
+                <div class="notification-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    <div class="notification-count">3</div>
+                </div>
+                <div class="user-avatar">A</div>
+            </div>
+        </header>
+
+        <div class="dashboard">
+            <div class="sidebar">
+                <div class="nav-item active">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    Dashboard
+                </div>
+                <div class="nav-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
                         <line x1="8" y1="21" x2="16" y2="21"></line>
                         <line x1="12" y1="17" x2="12" y2="21"></line>
                     </svg>
-                    CPU Usage
-                </h2>
-                <div class="metric-value">45%</div>
-                <div class="progress-bar">
-                    <div class="progress-fill good" style="width: 45%;"></div>
+                    Devices
                 </div>
-            </div>
-            
-            <div class="metric-card">
-                <h2>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
-                        <rect x="9" y="9" width="6" height="6"></rect>
-                        <line x1="9" y1="2" x2="9" y2="4"></line>
-                        <line x1="15" y1="2" x2="15" y2="4"></line>
-                        <line x1="9" y1="20" x2="9" y2="22"></line>
-                        <line x1="15" y1="20" x2="15" y2="22"></line>
-                        <line x1="20" y1="9" x2="22" y2="9"></line>
-                        <line x1="20" y1="15" x2="22" y2="15"></line>
-                        <line x1="2" y1="9" x2="4" y2="9"></line>
-                        <line x1="2" y1="15" x2="4" y2="15"></line>
+                <div class="nav-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                        <polyline points="13 2 13 9 20 9"></polyline>
                     </svg>
-                    Memory Usage
-                </h2>
-                <div class="metric-value">6.2 GB / 16 GB</div>
-                <div class="progress-bar">
-                    <div class="progress-fill good" style="width: 38%;"></div>
+                    Reports
                 </div>
-            </div>
-            
-            <div class="metric-card">
-                <h2>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                <div class="nav-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                        <line x1="4" y1="22" x2="4" y2="15"></line>
                     </svg>
-                    Disk Usage
-                </h2>
-                <div class="metric-value">256 GB / 512 GB</div>
-                <div class="progress-bar">
-                    <div class="progress-fill warning" style="width: 50%;"></div>
+                    Alerts
                 </div>
-            </div>
-            
-            <div class="metric-card">
-                <h2>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+                <div class="nav-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                     </svg>
-                    Network Usage
-                </h2>
-                <div class="metric-value">2.4 MB/s</div>
-                <div class="progress-bar">
-                    <div class="progress-fill good" style="width: 30%;"></div>
+                    Settings
                 </div>
             </div>
-        </div>
-        
-        <div class="alerts-section">
-            <h2>Recent Alerts</h2>
-            <div class="alert-list">
-                <div class="alert-card critical">
-                    <div class="alert-content">
-                        <div class="alert-title">High CPU Temperature</div>
-                        <div class="alert-description">CPU temperature exceeds 80°C - Potential performance impact</div>
-                    </div>
-                    <div class="alert-actions">
-                        <button class="alert-button resolve">Resolve</button>
-                        <button class="alert-button ignore">Ignore</button>
-                    </div>
-                </div>
-                
-                <div class="alert-card warning">
-                    <div class="alert-content">
-                        <div class="alert-title">Low Disk Space</div>
-                        <div class="alert-description">System drive has less than 20% free space - Consider cleanup</div>
-                    </div>
-                    <div class="alert-actions">
-                        <button class="alert-button resolve">Resolve</button>
-                        <button class="alert-button ignore">Ignore</button>
-                    </div>
-                </div>
-                
-                <div class="alert-card info">
-                    <div class="alert-content">
-                        <div class="alert-title">Software Update Available</div>
-                        <div class="alert-description">New security patch available for Windows 11</div>
-                    </div>
-                    <div class="alert-actions">
-                        <button class="alert-button resolve">Update</button>
-                        <button class="alert-button ignore">Later</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="self-healing-section">
-            <h2>Self-Healing Actions</h2>
-            <div class="healing-actions">
-                <div class="healing-card">
-                    <h3>Performance Optimization</h3>
-                    <p>Automatically optimize system resources and clear temporary files</p>
-                    <div class="healing-status">
-                        <div class="status-indicator active"></div>
-                        <span>Active</span>
-                    </div>
-                </div>
-                
-                <div class="healing-card">
-                    <h3>Driver Updates</h3>
-                    <p>Monitor and update device drivers automatically</p>
-                    <div class="healing-status">
-                        <div class="status-indicator pending"></div>
-                        <span>Pending Update</span>
-                    </div>
-                </div>
-                
-                <div class="healing-card">
-                    <h3>Security Patches</h3>
-                    <p>Automatically apply security updates and patches</p>
-                    <div class="healing-status">
-                        <div class="status-indicator active"></div>
-                        <span>Active</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <script>
-        // Refresh functionality
-        document.querySelector('.button.refresh').addEventListener('click', function() {
-            location.reload();
-        });
+            <div class="main-content">
+                <div class="overview">
+                    <div class="card stat-card">
+                        <div class="stat-header">
+                            <div class="stat-title">Devices Monitored</div>
+                            <div class="stat-icon bg-primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-value">248</div>
+                        <div class="stat-trend">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="trend-up">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                <polyline points="17 6 23 6 23 12"></polyline>
+                            </svg>
+                            <span class="trend-up">+3.2%</span> from last month
+                        </div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-header">
+                            <div class="stat-title">Active Alerts</div>
+                            <div class="stat-icon bg-warning">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-value">12</div>
+                        <div class="stat-trend">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="trend-down">
+                                <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline>
+                                <polyline points="17 18 23 18 23 12"></polyline>
+                            </svg>
+                            <span class="trend-down">-24%</span> from last week
+                        </div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-header">
+                            <div class="stat-title">Issues Resolved</div>
+                            <div class="stat-icon bg-success">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-value">142</div>
+                        <div class="stat-trend">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="trend-up">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                <polyline points="17 6 23 6 23 12"></polyline>
+                            </svg>
+                            <span class="trend-up">+12.7%</span> from last month
+                        </div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-header">
+                            <div class="stat-title">Self-Healing Actions</div>
+                            <div class="stat-icon bg-primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92zM18 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM6 13c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm12 7.02c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="stat-value">87</div>
+                        <div class="stat-trend">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="trend-up">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                <polyline points="17 6 23 6 23 12"></polyline>
+                            </svg>
+                            <span class="trend-up">+8.5%</span> from last week
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-row">
+                    <div class="card">
+                        <div class="chart-header">
+                            <div class="chart-title">System Performance Metrics</div>
+                            <div class="chart-actions">
+                                <button class="chart-btn">Day</button>
+                                <button class="chart-btn active">Week</button>
+                                <button class="chart-btn">Month</button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <svg width="100%" height="100%" viewBox="0 0 800 300">
+                                <!-- Chart content will be added here -->
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="chart-header">
+                            <div class="chart-title">Recent Alerts</div>
+                        </div>
+                        <div class="alert-list">
+                            <div class="alert-item">
+                                <div class="alert-icon bg-danger">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                    </svg>
+                                </div>
+                                <div class="alert-content">
+                                    <div class="alert-title">High CPU Temperature</div>
+                                    <div class="alert-message">CPU temperature exceeds 80°C - Potential performance impact</div>
+                                    <div class="alert-time">2 minutes ago</div>
+                                </div>
+                                <button class="alert-action">Resolve</button>
+                            </div>
+                            
+                            <div class="alert-item">
+                                <div class="alert-icon bg-warning">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                    </svg>
+                                </div>
+                                <div class="alert-content">
+                                    <div class="alert-title">Low Disk Space</div>
+                                    <div class="alert-message">System drive has less than 20% free space - Consider cleanup</div>
+                                    <div class="alert-time">15 minutes ago</div>
+                                </div>
+                                <button class="alert-action">Resolve</button>
+                            </div>
+                            
+                            <div class="alert-item">
+                                <div class="alert-icon bg-primary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                                    </svg>
+                                </div>
+                                <div class="alert-content">
+                                    <div class="alert-title">Software Update Available</div>
+                                    <div class="alert-message">New security patch available for Windows 11</div>
+                                    <div class="alert-time">1 hour ago</div>
+                                </div>
+                                <button class="alert-action">Update</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         
-        // Settings button navigation
-        document.querySelector('.button.settings').addEventListener('click', function() {
-            window.location.href = 'settings.html';
-        });
-        
-        // Alert resolution functionality
-        document.querySelectorAll('.alert-button.resolve').forEach(button => {
-            button.addEventListener('click', function() {
-                const alertCard = this.closest('.alert-card');
-                alertCard.style.opacity = '0';
-                setTimeout(() => {
-                    alertCard.remove();
-                }, 300);
-            });
-        });
-        
-        // Alert ignore functionality
-        document.querySelectorAll('.alert-button.ignore').forEach(button => {
-            button.addEventListener('click', function() {
-                const alertCard = this.closest('.alert-card');
-                alertCard.style.opacity = '0';
-                setTimeout(() => {
-                    alertCard.remove();
-                }, 300);
-            });
-        });
-    </script>
+        <footer>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Help Center</a>
+            </div>
+            <div>© 2024 IT Health Monitor. All rights reserved.</div>
+        </footer>
+    </div>
 </body>
 </html> 
