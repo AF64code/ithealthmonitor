@@ -567,5 +567,112 @@
             <div>© 2024 IT Health Monitor. All rights reserved.</div>
         </footer>
     </div>
+    <script>
+        // Navigation menu functionality
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // Remove active class from all nav items
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                // Add active class to clicked item
+                this.classList.add('active');
+            });
+        });
+
+        // Chart period toggle functionality
+        document.querySelectorAll('.chart-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active class from all buttons
+                document.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Here you would typically update the chart data based on the selected period
+                const period = this.textContent.toLowerCase();
+                console.log(`Loading chart data for ${period} period`);
+            });
+        });
+
+        // Alert action buttons functionality
+        document.querySelectorAll('.alert-action').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const alertItem = this.closest('.alert-item');
+                const action = this.textContent;
+                
+                if (action === 'Resolve') {
+                    // Add resolved state styling
+                    alertItem.style.opacity = '0.5';
+                    this.textContent = 'Resolved';
+                    this.disabled = true;
+                    console.log('Alert resolved');
+                } else if (action === 'Update') {
+                    // Simulate update process
+                    this.textContent = 'Updating...';
+                    setTimeout(() => {
+                        this.textContent = 'Updated';
+                        this.disabled = true;
+                        console.log('Software updated');
+                    }, 2000);
+                }
+            });
+        });
+
+        // Notification icon functionality
+        document.querySelector('.notification-icon').addEventListener('click', function() {
+            // Here you would typically show a notification panel
+            console.log('Showing notifications');
+            // Update notification count
+            const count = document.querySelector('.notification-count');
+            count.textContent = '0';
+            count.style.display = 'none';
+        });
+
+        // Sample chart data (you would replace this with real data)
+        function updateChart(period) {
+            const chartContainer = document.querySelector('.chart-container svg');
+            // Clear existing chart
+            chartContainer.innerHTML = '';
+            
+            // Add sample chart content based on period
+            const data = {
+                day: [30, 45, 60, 40, 55, 70, 65],
+                week: [40, 50, 45, 60, 55, 65, 70],
+                month: [35, 45, 50, 55, 60, 65, 70]
+            };
+            
+            const points = data[period];
+            const width = 800;
+            const height = 300;
+            const padding = 50;
+            
+            // Add axes
+            chartContainer.innerHTML += `
+                <line x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${height - padding}" stroke="#dadce0" stroke-width="2"/>
+                <line x1="${padding}" y1="${padding}" x2="${padding}" y2="${height - padding}" stroke="#dadce0" stroke-width="2"/>
+            `;
+            
+            // Add data points
+            points.forEach((point, i) => {
+                const x = padding + (i * (width - 2 * padding) / (points.length - 1));
+                const y = height - padding - (point * (height - 2 * padding) / 100);
+                
+                // Add point
+                chartContainer.innerHTML += `
+                    <circle cx="${x}" cy="${y}" r="4" fill="#1a73e8"/>
+                `;
+                
+                // Add line to next point
+                if (i < points.length - 1) {
+                    const nextX = padding + ((i + 1) * (width - 2 * padding) / (points.length - 1));
+                    const nextY = height - padding - (points[i + 1] * (height - 2 * padding) / 100);
+                    chartContainer.innerHTML += `
+                        <line x1="${x}" y1="${y}" x2="${nextX}" y2="${nextY}" stroke="#1a73e8" stroke-width="2"/>
+                    `;
+                }
+            });
+        }
+
+        // Initialize chart with default period
+        updateChart('week');
+    </script>
 </body>
 </html> 
