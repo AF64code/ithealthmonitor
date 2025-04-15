@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Proactive IT Health Monitoring</title>
+    <script src="https://unpkg.com/recharts@2.1.16/umd/Recharts.min.js"></script>
     <style>
         :root {
             --primary: #1a73e8;
@@ -506,52 +507,7 @@
                             <div class="chart-title">Recent Alerts</div>
                         </div>
                         <div class="alert-list">
-                            <div class="alert-item">
-                                <div class="alert-icon bg-danger">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                                        <line x1="12" y1="9" x2="12" y2="13"></line>
-                                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                                    </svg>
-                                </div>
-                                <div class="alert-content">
-                                    <div class="alert-title">High CPU Temperature</div>
-                                    <div class="alert-message">CPU temperature exceeds 80°C - Potential performance impact</div>
-                                    <div class="alert-time">2 minutes ago</div>
-                                </div>
-                                <button class="alert-action">Resolve</button>
-                            </div>
-                            
-                            <div class="alert-item">
-                                <div class="alert-icon bg-warning">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                                        <line x1="12" y1="9" x2="12" y2="13"></line>
-                                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                                    </svg>
-                                </div>
-                                <div class="alert-content">
-                                    <div class="alert-title">Low Disk Space</div>
-                                    <div class="alert-message">System drive has less than 20% free space - Consider cleanup</div>
-                                    <div class="alert-time">15 minutes ago</div>
-                                </div>
-                                <button class="alert-action">Resolve</button>
-                            </div>
-                            
-                            <div class="alert-item">
-                                <div class="alert-icon bg-primary">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                                    </svg>
-                                </div>
-                                <div class="alert-content">
-                                    <div class="alert-title">Software Update Available</div>
-                                    <div class="alert-message">New security patch available for Windows 11</div>
-                                    <div class="alert-time">1 hour ago</div>
-                                </div>
-                                <button class="alert-action">Update</button>
-                            </div>
+                            <!-- Alerts will be dynamically populated here -->
                         </div>
                     </div>
                 </div>
@@ -626,20 +582,30 @@
             count.style.display = 'none';
         });
 
-        // Sample chart data (you would replace this with real data)
+        // Performance data
+        const performanceData = [
+            { name: '12:00', cpu: 65, memory: 42, disk: 28, network: 52 },
+            { name: '13:00', cpu: 59, memory: 45, disk: 28, network: 40 },
+            { name: '14:00', cpu: 80, memory: 52, disk: 29, network: 45 },
+            { name: '15:00', cpu: 81, memory: 56, disk: 29, network: 60 },
+            { name: '16:00', cpu: 56, memory: 49, disk: 30, network: 55 },
+            { name: '17:00', cpu: 55, memory: 45, disk: 30, network: 48 },
+            { name: '18:00', cpu: 40, memory: 37, disk: 31, network: 44 },
+        ];
+
+        // Alert data
+        const alerts = [
+            { id: 1, device: 'WS-DEV-104', issue: 'Memory usage exceeding 80%', severity: 'high', time: '18:45' },
+            { id: 2, device: 'WS-MKT-023', issue: 'CPU throttling detected', severity: 'medium', time: '18:32' },
+            { id: 3, device: 'WS-FIN-056', issue: 'Disk space below 15%', severity: 'high', time: '18:17' },
+            { id: 4, device: 'WS-HR-012', issue: 'Software update pending', severity: 'low', time: '17:55' },
+        ];
+
+        // Update chart with real data
         function updateChart(period) {
             const chartContainer = document.querySelector('.chart-container svg');
-            // Clear existing chart
             chartContainer.innerHTML = '';
-            
-            // Add sample chart content based on period
-            const data = {
-                day: [30, 45, 60, 40, 55, 70, 65],
-                week: [40, 50, 45, 60, 55, 65, 70],
-                month: [35, 45, 50, 55, 60, 65, 70]
-            };
-            
-            const points = data[period];
+
             const width = 800;
             const height = 300;
             const padding = 50;
@@ -649,30 +615,93 @@
                 <line x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${height - padding}" stroke="#dadce0" stroke-width="2"/>
                 <line x1="${padding}" y1="${padding}" x2="${padding}" y2="${height - padding}" stroke="#dadce0" stroke-width="2"/>
             `;
-            
-            // Add data points
-            points.forEach((point, i) => {
-                const x = padding + (i * (width - 2 * padding) / (points.length - 1));
-                const y = height - padding - (point * (height - 2 * padding) / 100);
-                
-                // Add point
+
+            // Add grid lines
+            for (let i = 0; i <= 100; i += 20) {
+                const y = height - padding - (i * (height - 2 * padding) / 100);
                 chartContainer.innerHTML += `
-                    <circle cx="${x}" cy="${y}" r="4" fill="#1a73e8"/>
+                    <line x1="${padding}" y1="${y}" x2="${width - padding}" y2="${y}" stroke="#dadce0" stroke-width="1" stroke-dasharray="5,5"/>
                 `;
-                
-                // Add line to next point
-                if (i < points.length - 1) {
-                    const nextX = padding + ((i + 1) * (width - 2 * padding) / (points.length - 1));
-                    const nextY = height - padding - (points[i + 1] * (height - 2 * padding) / 100);
+            }
+
+            // Add data points and lines for each metric
+            const metrics = ['cpu', 'memory', 'disk', 'network'];
+            const colors = ['#3498DB', '#F39C12', '#E74C3C', '#2ECC71'];
+            
+            metrics.forEach((metric, metricIndex) => {
+                performanceData.forEach((point, i) => {
+                    const x = padding + (i * (width - 2 * padding) / (performanceData.length - 1));
+                    const y = height - padding - (point[metric] * (height - 2 * padding) / 100);
+                    
+                    // Add point
                     chartContainer.innerHTML += `
-                        <line x1="${x}" y1="${y}" x2="${nextX}" y2="${nextY}" stroke="#1a73e8" stroke-width="2"/>
+                        <circle cx="${x}" cy="${y}" r="4" fill="${colors[metricIndex]}"/>
                     `;
-                }
+                    
+                    // Add line to next point
+                    if (i < performanceData.length - 1) {
+                        const nextX = padding + ((i + 1) * (width - 2 * padding) / (performanceData.length - 1));
+                        const nextY = height - padding - (performanceData[i + 1][metric] * (height - 2 * padding) / 100);
+                        chartContainer.innerHTML += `
+                            <line x1="${x}" y1="${y}" x2="${nextX}" y2="${nextY}" stroke="${colors[metricIndex]}" stroke-width="2"/>
+                        `;
+                    }
+                });
+            });
+
+            // Add time labels
+            performanceData.forEach((point, i) => {
+                const x = padding + (i * (width - 2 * padding) / (performanceData.length - 1));
+                chartContainer.innerHTML += `
+                    <text x="${x}" y="${height - padding + 20}" text-anchor="middle" font-size="12" fill="#70757a">${point.name}</text>
+                `;
             });
         }
 
         // Initialize chart with default period
         updateChart('week');
+
+        // Update alerts with real data
+        const alertList = document.querySelector('.alert-list');
+        alertList.innerHTML = alerts.map(alert => `
+            <div class="alert-item">
+                <div class="alert-icon ${alert.severity === 'high' ? 'bg-danger' : alert.severity === 'medium' ? 'bg-warning' : 'bg-primary'}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                </div>
+                <div class="alert-content">
+                    <div class="alert-title">${alert.device}</div>
+                    <div class="alert-message">${alert.issue}</div>
+                    <div class="alert-time">${alert.time}</div>
+                </div>
+                <button class="alert-action">${alert.severity === 'low' ? 'Update' : 'Resolve'}</button>
+            </div>
+        `).join('');
+
+        // Reattach event listeners to new alert buttons
+        document.querySelectorAll('.alert-action').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const alertItem = this.closest('.alert-item');
+                const action = this.textContent;
+                
+                if (action === 'Resolve') {
+                    alertItem.style.opacity = '0.5';
+                    this.textContent = 'Resolved';
+                    this.disabled = true;
+                    console.log('Alert resolved');
+                } else if (action === 'Update') {
+                    this.textContent = 'Updating...';
+                    setTimeout(() => {
+                        this.textContent = 'Updated';
+                        this.disabled = true;
+                        console.log('Software updated');
+                    }, 2000);
+                }
+            });
+        });
     </script>
 </body>
 </html> 
