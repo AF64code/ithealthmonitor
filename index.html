@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Proactive IT Health Monitoring</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -13,190 +14,373 @@
         }
         
         body {
-            background-color: #FFFFFF;
+            background-color: #F8FAFC;
+            color: #1E293B;
         }
         
         .dashboard {
-            width: 1440px;
-            height: 900px;
+            max-width: 1440px;
             margin: 0 auto;
+            padding: 24px;
         }
         
         .header {
-            width: 100%;
-            height: 80px;
-            background-color: #1A237E;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 40px;
+            margin-bottom: 32px;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #1E40AF 0%, #1E3A8A 100%);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         
         .header h1 {
             color: #FFFFFF;
-            font-size: 24px;
+            font-size: 28px;
+            font-weight: 600;
         }
         
         .quick-actions {
             display: flex;
-            gap: 20px;
+            gap: 16px;
         }
         
         .button {
             padding: 10px 20px;
             border: none;
-            border-radius: 4px;
-            color: #FFFFFF;
+            border-radius: 8px;
+            font-weight: 500;
             cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         .button.refresh {
-            background-color: #4CAF50;
+            background-color: #10B981;
+            color: #FFFFFF;
+        }
+        
+        .button.refresh:hover {
+            background-color: #059669;
         }
         
         .button.settings {
-            background-color: #1A237E;
-            border: 1px solid #FFFFFF;
+            background-color: #3B82F6;
+            color: #FFFFFF;
+        }
+        
+        .button.settings:hover {
+            background-color: #2563EB;
         }
         
         .metrics-grid {
-            width: 1360px;
-            height: 400px;
-            margin: 20px auto;
-            background-color: #F5F5F5;
-            padding: 20px;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
+            gap: 24px;
+            margin-bottom: 32px;
         }
         
         .metric-card {
             background-color: #FFFFFF;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-4px);
         }
         
         .metric-card h2 {
-            font-size: 18px;
-            color: #333333;
-            margin-bottom: 20px;
+            font-size: 16px;
+            color: #64748B;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         .metric-value {
-            font-size: 36px;
-            font-weight: bold;
-            color: #4CAF50;
-            margin-bottom: 20px;
-        }
-        
-        .metric-memory-value, .metric-disk-value, .metric-network-value {
-            font-size: 24px;
-            font-weight: bold;
-            color: #4CAF50;
-            margin-bottom: 20px;
+            font-size: 32px;
+            font-weight: 600;
+            color: #1E40AF;
+            margin-bottom: 16px;
         }
         
         .progress-bar {
             width: 100%;
             height: 8px;
-            background-color: #E0E0E0;
+            background-color: #E2E8F0;
             border-radius: 4px;
             overflow: hidden;
         }
         
         .progress-fill {
             height: 100%;
-            background-color: #4CAF50;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-fill.good {
+            background-color: #10B981;
+        }
+        
+        .progress-fill.warning {
+            background-color: #F59E0B;
+        }
+        
+        .progress-fill.critical {
+            background-color: #EF4444;
         }
         
         .alerts-section {
-            width: 1360px;
-            margin: 20px auto;
             background-color: #FFFFFF;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
         
         .alerts-section h2 {
-            font-size: 18px;
-            color: #333333;
-            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: #1E293B;
         }
         
         .alert-list {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
         }
         
         .alert-card {
-            padding: 15px;
-            border-radius: 4px;
+            padding: 16px;
+            border-radius: 8px;
             border-left: 4px solid;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
         .alert-card.critical {
-            background-color: #FFEBEE;
-            border-color: #F44336;
+            background-color: #FEF2F2;
+            border-color: #EF4444;
         }
         
         .alert-card.warning {
-            background-color: #FFF8E1;
-            border-color: #FFC107;
+            background-color: #FFFBEB;
+            border-color: #F59E0B;
+        }
+        
+        .alert-card.info {
+            background-color: #EFF6FF;
+            border-color: #3B82F6;
+        }
+        
+        .alert-content {
+            flex: 1;
         }
         
         .alert-title {
-            font-weight: bold;
-            margin-bottom: 5px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #1E293B;
         }
         
         .alert-description {
-            color: #666666;
+            color: #64748B;
+            font-size: 14px;
+        }
+        
+        .alert-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .alert-button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .alert-button.resolve {
+            background-color: #10B981;
+            color: #FFFFFF;
+        }
+        
+        .alert-button.resolve:hover {
+            background-color: #059669;
+        }
+        
+        .alert-button.ignore {
+            background-color: #E2E8F0;
+            color: #64748B;
+        }
+        
+        .alert-button.ignore:hover {
+            background-color: #CBD5E1;
+        }
+        
+        .self-healing-section {
+            margin-top: 32px;
+            background-color: #FFFFFF;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .self-healing-section h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: #1E293B;
+        }
+        
+        .healing-actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        
+        .healing-card {
+            background-color: #F8FAFC;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #E2E8F0;
+        }
+        
+        .healing-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #1E293B;
+        }
+        
+        .healing-card p {
+            color: #64748B;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+        
+        .healing-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #64748B;
+        }
+        
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        .status-indicator.active {
+            background-color: #10B981;
+        }
+        
+        .status-indicator.pending {
+            background-color: #F59E0B;
+        }
+        
+        .status-indicator.inactive {
+            background-color: #94A3B8;
         }
     </style>
 </head>
 <body>
     <div class="dashboard">
         <div class="header">
-            <h1>System Health Monitor</h1>
+            <h1>Proactive IT Health Monitoring</h1>
             <div class="quick-actions">
-                <button class="button refresh">Refresh</button>
-                <button class="button settings">Settings</button>
+                <button class="button refresh">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M23 4v6h-6M1 20v-6h6"></path>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
+                    Refresh
+                </button>
+                <button class="button settings">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    Settings
+                </button>
             </div>
         </div>
         
         <div class="metrics-grid">
             <div class="metric-card">
-                <h2>CPU Usage</h2>
+                <h2>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                    </svg>
+                    CPU Usage
+                </h2>
                 <div class="metric-value">45%</div>
                 <div class="progress-bar">
-                    <div class="progress-fill" style="width: 45%;"></div>
+                    <div class="progress-fill good" style="width: 45%;"></div>
                 </div>
             </div>
             
             <div class="metric-card">
-                <h2>Memory Usage</h2>
-                <div class="metric-memory-value">6.2 GB / 16 GB</div>
+                <h2>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
+                        <rect x="9" y="9" width="6" height="6"></rect>
+                        <line x1="9" y1="2" x2="9" y2="4"></line>
+                        <line x1="15" y1="2" x2="15" y2="4"></line>
+                        <line x1="9" y1="20" x2="9" y2="22"></line>
+                        <line x1="15" y1="20" x2="15" y2="22"></line>
+                        <line x1="20" y1="9" x2="22" y2="9"></line>
+                        <line x1="20" y1="15" x2="22" y2="15"></line>
+                        <line x1="2" y1="9" x2="4" y2="9"></line>
+                        <line x1="2" y1="15" x2="4" y2="15"></line>
+                    </svg>
+                    Memory Usage
+                </h2>
+                <div class="metric-value">6.2 GB / 16 GB</div>
                 <div class="progress-bar">
-                    <div class="progress-fill" style="width: 38%;"></div>
+                    <div class="progress-fill good" style="width: 38%;"></div>
                 </div>
             </div>
             
             <div class="metric-card">
-                <h2>Disk Usage</h2>
-                <div class="metric-disk-value">256 GB / 512 GB</div>
+                <h2>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                    </svg>
+                    Disk Usage
+                </h2>
+                <div class="metric-value">256 GB / 512 GB</div>
                 <div class="progress-bar">
-                    <div class="progress-fill" style="width: 50%;"></div>
+                    <div class="progress-fill warning" style="width: 50%;"></div>
                 </div>
             </div>
             
             <div class="metric-card">
-                <h2>Network Usage</h2>
-                <div class="metric-network-value">2.4 MB/s</div>
+                <h2>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+                    </svg>
+                    Network Usage
+                </h2>
+                <div class="metric-value">2.4 MB/s</div>
                 <div class="progress-bar">
-                    <div class="progress-fill" style="width: 30%;"></div>
+                    <div class="progress-fill good" style="width: 30%;"></div>
                 </div>
             </div>
         </div>
@@ -205,27 +389,104 @@
             <h2>Recent Alerts</h2>
             <div class="alert-list">
                 <div class="alert-card critical">
-                    <div class="alert-title">High CPU Temperature</div>
-                    <div class="alert-description">CPU temperature exceeds 80°C</div>
+                    <div class="alert-content">
+                        <div class="alert-title">High CPU Temperature</div>
+                        <div class="alert-description">CPU temperature exceeds 80°C - Potential performance impact</div>
+                    </div>
+                    <div class="alert-actions">
+                        <button class="alert-button resolve">Resolve</button>
+                        <button class="alert-button ignore">Ignore</button>
+                    </div>
                 </div>
                 
                 <div class="alert-card warning">
-                    <div class="alert-title">Low Disk Space</div>
-                    <div class="alert-description">System drive has less than 20% free space</div>
+                    <div class="alert-content">
+                        <div class="alert-title">Low Disk Space</div>
+                        <div class="alert-description">System drive has less than 20% free space - Consider cleanup</div>
+                    </div>
+                    <div class="alert-actions">
+                        <button class="alert-button resolve">Resolve</button>
+                        <button class="alert-button ignore">Ignore</button>
+                    </div>
+                </div>
+                
+                <div class="alert-card info">
+                    <div class="alert-content">
+                        <div class="alert-title">Software Update Available</div>
+                        <div class="alert-description">New security patch available for Windows 11</div>
+                    </div>
+                    <div class="alert-actions">
+                        <button class="alert-button resolve">Update</button>
+                        <button class="alert-button ignore">Later</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="self-healing-section">
+            <h2>Self-Healing Actions</h2>
+            <div class="healing-actions">
+                <div class="healing-card">
+                    <h3>Performance Optimization</h3>
+                    <p>Automatically optimize system resources and clear temporary files</p>
+                    <div class="healing-status">
+                        <div class="status-indicator active"></div>
+                        <span>Active</span>
+                    </div>
+                </div>
+                
+                <div class="healing-card">
+                    <h3>Driver Updates</h3>
+                    <p>Monitor and update device drivers automatically</p>
+                    <div class="healing-status">
+                        <div class="status-indicator pending"></div>
+                        <span>Pending Update</span>
+                    </div>
+                </div>
+                
+                <div class="healing-card">
+                    <h3>Security Patches</h3>
+                    <p>Automatically apply security updates and patches</p>
+                    <div class="healing-status">
+                        <div class="status-indicator active"></div>
+                        <span>Active</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // 简单的刷新功能
+        // Refresh functionality
         document.querySelector('.button.refresh').addEventListener('click', function() {
             location.reload();
         });
         
-        // 设置按钮跳转
+        // Settings button navigation
         document.querySelector('.button.settings').addEventListener('click', function() {
             window.location.href = 'settings.html';
+        });
+        
+        // Alert resolution functionality
+        document.querySelectorAll('.alert-button.resolve').forEach(button => {
+            button.addEventListener('click', function() {
+                const alertCard = this.closest('.alert-card');
+                alertCard.style.opacity = '0';
+                setTimeout(() => {
+                    alertCard.remove();
+                }, 300);
+            });
+        });
+        
+        // Alert ignore functionality
+        document.querySelectorAll('.alert-button.ignore').forEach(button => {
+            button.addEventListener('click', function() {
+                const alertCard = this.closest('.alert-card');
+                alertCard.style.opacity = '0';
+                setTimeout(() => {
+                    alertCard.remove();
+                }, 300);
+            });
         });
     </script>
 </body>
