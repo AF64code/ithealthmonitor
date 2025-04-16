@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proactive IT Health Monitoring</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #34495e;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        header h1 {
+            margin: 0;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        header h1 i {
+            margin-right: 15px;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .card-title {
+            margin: 0;
+            font-size: 18px;
+            color: var(--primary);
+        }
+        
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .status-healthy {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .status-warning {
+            background-color: var(--warning);
+            color: white;
+        }
+        
+        .status-critical {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .metric {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .metric-label {
+            flex: 1;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        
+        .metric-value {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background-color: #eee;
+            border-radius: 4px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            border-radius: 4px;
+        }
+        
+        .progress-cpu {
+            background-color: var(--secondary);
+            width: 65%;
+        }
+        
+        .progress-memory {
+            background-color: var(--secondary);
+            width: 45%;
+        }
+        
+        .progress-storage {
+            background-color: var(--secondary);
+            width: 78%;
+        }
+        
+        .progress-network {
+            background-color: var(--secondary);
+            width: 30%;
+        }
+        
+        .alerts {
+            margin-top: 30px;
+        }
+        
+        .alert {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .alert-icon {
+            margin-right: 15px;
+            font-size: 24px;
+        }
+        
+        .alert-critical .alert-icon {
+            color: var(--danger);
+        }
+        
+        .alert-warning .alert-icon {
+            color: var(--warning);
+        }
+        
+        .alert-info .alert-icon {
+            color: var(--secondary);
+        }
+        
+        .alert-content {
+            flex: 1;
+        }
+        
+        .alert-title {
+            margin: 0 0 5px 0;
+            font-size: 16px;
+        }
+        
+        .alert-message {
+            margin: 0;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        
+        .alert-time {
+            font-size: 12px;
+            color: #bdc3c7;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-secondary {
+            background-color: var(--light);
+            color: var(--dark);
+            margin-right: 10px;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #d5dbdb;
+        }
+        
+        .recommendations {
+            margin-top: 30px;
+        }
+        
+        .recommendation {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: white;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .recommendation-icon {
+            margin-right: 15px;
+            font-size: 24px;
+            color: var(--success);
+        }
+        
+        .recommendation-content {
+            flex: 1;
+        }
+        
+        .recommendation-title {
+            margin: 0 0 5px 0;
+            font-size: 16px;
+        }
+        
+        .recommendation-desc {
+            margin: 0;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        
+        .recommendation-action {
+            font-size: 14px;
+            color: var(--secondary);
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .telemetry-data {
+            margin-top: 30px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .telemetry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .telemetry-title {
+            margin: 0;
+            font-size: 18px;
+            color: var(--primary);
+        }
+        
+        .telemetry-refresh {
+            color: var(--secondary);
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .telemetry-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .telemetry-table th, .telemetry-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .telemetry-table th {
+            background-color: #f8f9fa;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .telemetry-table tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .badge {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .badge-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .badge-warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .badge-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><i class="fas fa-heartbeat"></i> Proactive IT Health Monitoring</h1>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="dashboard">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">CPU Performance</h2>
+                    <span class="status status-warning">Warning</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Utilization</span>
+                    <span class="metric-value">65%</span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar progress-cpu"></div>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Temperature</span>
+                    <span class="metric-value">72°C</span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 72%; background-color: #e74c3c;"></div>
+                </div>
+                <p style="margin-top: 15px; font-size: 14px; color: #e74c3c;">
+                    <i class="fas fa-exclamation-triangle"></i> CPU temperature is above normal threshold.
+                </p>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Memory</h2>
+                    <span class="status status-healthy">Healthy</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Usage</span>
+                    <span class="metric-value">7.2/16 GB</span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar progress-memory"></div>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Available</span>
+                    <span class="metric-value">8.8 GB</span>
+                </div>
+                <p style="margin-top: 15px; font-size: 14px; color: #27ae60;">
+                    <i class="fas fa-check-circle"></i> Memory usage within normal parameters.
+                </p>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Storage</h2>
+                    <span class="status status-warning">Warning</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">C: Drive</span>
+                    <span class="metric-value">78% full</span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar progress-storage"></div>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Free Space</span>
+                    <span class="metric-value">43 GB</span>
+                </div>
+                <p style="margin-top: 15px; font-size: 14px; color: #f39c12;">
+                    <i class="fas fa-exclamation-triangle"></i> C: drive is approaching capacity threshold.
+                </p>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Network</h2>
+                    <span class="status status-healthy">Healthy</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Bandwidth Usage</span>
+                    <span class="metric-value">30%</span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar progress-network"></div>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Latency</span>
+                    <span class="metric-value">28 ms</span>
+                </div>
+                <p style="margin-top: 15px; font-size: 14px; color: #27ae60;">
+                    <i class="fas fa-check-circle"></i> Network performance is optimal.
+                </p>
+            </div>
+        </div>
+        
+        <div class="alerts">
+            <h2><i class="fas fa-bell"></i> Active Alerts</h2>
+            
+            <div class="alert alert-critical">
+                <div class="alert-icon">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="alert-content">
+                    <h3 class="alert-title">Critical: High CPU Temperature</h3>
+                    <p class="alert-message">CPU temperature has reached 72°C which may lead to thermal throttling.</p>
+                </div>
+                <div class="alert-time">2 min ago</div>
+            </div>
+            
+            <div class="alert alert-warning">
+                <div class="alert-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="alert-content">
+                    <h3 class="alert-title">Warning: Disk Space Low</h3>
+                    <p class="alert-message">C: drive has only 43GB (22%) free space remaining.</p>
+                </div>
+                <div class="alert-time">15 min ago</div>
+            </div>
+            
+            <div class="alert alert-info">
+                <div class="alert-icon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="alert-content">
+                    <h3 class="alert-title">Update Available: Graphics Driver</h3>
+                    <p class="alert-message">New NVIDIA driver version 512.95 available for download.</p>
+                </div>
+                <div class="alert-time">1 hour ago</div>
+            </div>
+        </div>
+        
+        <div class="recommendations">
+            <h2><i class="fas fa-lightbulb"></i> Recommended Actions</h2>
+            
+            <div class="recommendation">
+                <div class="recommendation-icon">
+                    <i class="fas fa-fan"></i>
+                </div>
+                <div class="recommendation-content">
+                    <h3 class="recommendation-title">Improve CPU Cooling</h3>
+                    <p class="recommendation-desc">Clean dust from cooling fans and ensure proper ventilation to lower CPU temperature.</p>
+                </div>
+                <div class="recommendation-action">Run Cooling Optimization</div>
+            </div>
+            
+            <div class="recommendation">
+                <div class="recommendation-icon">
+                    <i class="fas fa-trash-alt"></i>
+                </div>
+                <div class="recommendation-content">
+                    <h3 class="recommendation-title">Disk Cleanup Recommended</h3>
+                    <p class="recommendation-desc">Remove temporary files and unused applications to free up disk space.</p>
+                </div>
+                <div class="recommendation-action">Start Cleanup</div>
+            </div>
+            
+            <div class="recommendation">
+                <div class="recommendation-icon">
+                    <i class="fas fa-download"></i>
+                </div>
+                <div class="recommendation-content">
+                    <h3 class="recommendation-title">Driver Update Available</h3>
+                    <p class="recommendation-desc">Update your graphics driver to improve performance and stability.</p>
+                </div>
+                <div class="recommendation-action">Download Now</div>
+            </div>
+        </div>
+        
+        <div class="telemetry-data">
+            <div class="telemetry-header">
+                <h2 class="telemetry-title"><i class="fas fa-database"></i> Telemetry Data</h2>
+                <span class="telemetry-refresh"><i class="fas fa-sync-alt"></i> Refresh Data</span>
+            </div>
+            
+            <table class="telemetry-table">
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Current Value</th>
+                        <th>Threshold</th>
+                        <th>Status</th>
+                        <th>Last Checked</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>CPU Usage</td>
+                        <td>65%</td>
+                        <td>85%</td>
+                        <td><span class="badge badge-warning">Warning</span></td>
+                        <td>2 minutes ago</td>
+                    </tr>
+                    <tr>
+                        <td>CPU Temperature</td>
+                        <td>72°C</td>
+                        <td>70°C</td>
+                        <td><span class="badge badge-danger">Critical</span></td>
+                        <td>2 minutes ago</td>
+                    </tr>
+                    <tr>
+                        <td>Memory Usage</td>
+                        <td>45%</td>
+                        <td>80%</td>
+                        <td><span class="badge badge-info">Normal</span></td>
+                        <td>5 minutes ago</td>
+                    </tr>
+                    <tr>
+                        <td>Disk Space (C:)</td>
+                        <td>78% used</td>
+                        <td>85%</td>
+                        <td><span class="badge badge-warning">Warning</span></td>
+                        <td>15 minutes ago</td>
+                    </tr>
+                    <tr>
+                        <td>Network Latency</td>
+                        <td>28 ms</td>
+                        <td>100 ms</td>
+                        <td><span class="badge badge-info">Normal</span></td>
+                        <td>1 minute ago</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-secondary">View Detailed Report</button>
+            <button class="btn btn-primary">Run System Optimization</button>
+        </div>
+    </div>
+    
+    <script>
+        // Simulate real-time data updates
+        function updateMetrics() {
+            // Randomly fluctuate some metrics to simulate real monitoring
+            const cpuValue = Math.min(100, Math.max(60, Math.floor(Math.random() * 10) + 60));
+            document.querySelector('.progress-cpu').style.width = cpuValue + '%';
+            document.querySelector('.metric-value').innerText = cpuValue + '%';
+            
+            const cpuTemp = Math.min(80, Math.max(65, Math.floor(Math.random() * 10) + 65));
+            document.querySelector('.progress-bar:nth-of-type(2)').style.width = cpuTemp + '%';
+            document.querySelector('.metric-value:nth-of-type(2)').innerText = cpuTemp + '°C';
+            
+            // Update the corresponding table row
+            document.querySelector('.telemetry-table tbody tr:nth-child(1) td:nth-child(2)').innerText = cpuValue + '%';
+            document.querySelector('.telemetry-table tbody tr:nth-child(2) td:nth-child(2)').innerText = cpuTemp + '°C';
+            
+            // Update status if needed
+            if (cpuTemp > 75) {
+                document.querySelector('.card-header:nth-of-type(1) .status').className = 'status status-critical';
+                document.querySelector('.telemetry-table tbody tr:nth-child(2) td:nth-child(4)').innerHTML = '<span class="badge badge-danger">Critical</span>';
+            } else if (cpuTemp > 70) {
+                document.querySelector('.card-header:nth-of-type(1) .status').className = 'status status-warning';
+                document.querySelector('.telemetry-table tbody tr:nth-child(2) td:nth-child(4)').innerHTML = '<span class="badge badge-warning">Warning</span>';
+            }
+        }
+        
+        // Update metrics every 5 seconds
+        setInterval(updateMetrics, 5000);
+        
+        // Add click handlers for buttons
+        document.querySelector('.telemetry-refresh').addEventListener('click', function() {
+            alert('Telemetry data refreshed!');
+            updateMetrics();
+        });
+        
+        document.querySelector('.recommendation-action:nth-of-type(1)').addEventListener('click', function() {
+            alert('Running cooling optimization...');
+        });
+        
+        document.querySelector('.recommendation-action:nth-of-type(2)').addEventListener('click', function() {
+            alert('Starting disk cleanup...');
+        });
+        
+        document.querySelector('.recommendation-action:nth-of-type(3)').addEventListener('click', function() {
+            alert('Opening driver download page...');
+        });
+        
+        document.querySelector('.btn-primary').addEventListener('click', function() {
+            alert('Running full system optimization...');
+        });
+    </script>
+</body>
+</html>
